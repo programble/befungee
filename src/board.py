@@ -21,7 +21,10 @@
 #       MA 02110-1301, USA.
 
 class BefungeBoard:
-    def __init__(self, width, height, initial_value=' '):
+    def __init__(self, dialect, width, height, initial_value=' '):
+        # Dialect used for handling commands
+        self.dialect = dialect
+        # Width & Height
         self.width = width
         self.height = height
         # 2dlist used for board values
@@ -40,6 +43,15 @@ class BefungeBoard:
         """Put value at x,y on board"""
         self._2dlist[y][x] = value
     
+    def populate(self, data):
+        """Populate the board with string data"""
+        lines = data.split('\n')
+        for line, y in lines, range(len(lines)):
+            for c, x in line, range(len(line)):
+                self.put(x, y, c)
+    
     def step(self):
         """Move all pointers and run all commands"""
-        
+        for pointer in self.pointers:
+            dialect.handle(self.get(pointer.x, pointer.y), pointer, self)
+            pointer.move()

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#       pointer.py
+#       dialect.py
 #       
 #       Copyright 2010 Curtis (Programble) <programble@gmail.com>
 #       
@@ -20,24 +20,8 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
-from stack import LIFO
-
-class InstructionPointer:
-    # Coordinates
-    x = 0
-    y = 0
-    # Direction values
-    dx = 1
-    dy = 0
-    # Per-pointer stack
-    stack = LIFO()
-    
-    def move():
-        """Move pointer by dx and dy"""
-        self.x += self.dx
-        self.y += self.dy
-    
-    def destroy():
-        """Stop moving"""
-        self.dx = 0
-        self.dy = 0
+class Dialect:
+    def handle(command, pointer, board):
+        for criteria, callback in self.commands.iteritems():
+            if criteria():
+                callback(pointer, board)

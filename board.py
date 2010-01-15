@@ -24,12 +24,16 @@ class BefungeBoard:
     def __init__(self, width, height, initial_value=' '):
         self.width = width
         self.height = height
+        # 2dlist used for board values
         self._2dlist = []
+        # Populate board with initial_value
         for y in range(self.height):
             _2dlist.append([initial_value for x in range(self.width)])
     
     def get(self, x, y):
+        """Get value located at x,y on board"""
         return self._2dlist[y][x]
     
     def put(self, x, y, value):
+        """Put value at x,y on board"""
         self._2dlist[y][x] = value

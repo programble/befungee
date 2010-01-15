@@ -23,17 +23,23 @@
 from stack import LIFO
 
 class InstructionPointer:
+    # Coordinates
     x = 0
     y = 0
+    # Direction values
     dx = 1
     dy = 0
+    # Per-pointer stack
     stack = LIFO()
+    
     stringmode = False
     
     def move():
+        """Move pointer by dx and dy"""
         self.x += self.dx
         self.y += self.dy
     
     def destroy():
+        """Stop moving"""
         self.dx = 0
         self.dy = 0

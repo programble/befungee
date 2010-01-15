@@ -39,3 +39,7 @@ class BefungeBoard:
     def put(self, x, y, value):
         """Put value at x,y on board"""
         self._2dlist[y][x] = value
+    
+    def step(self):
+        """Move all pointers and run all commands"""
+        

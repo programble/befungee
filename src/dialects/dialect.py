@@ -21,7 +21,7 @@
 #       MA 02110-1301, USA.
 
 class Dialect:
-    def handle(command, pointer, board):
+    def handle(self, command, pointer, board):
         for criteria, callback in self.commands.iteritems():
             if criteria():
                 callback(pointer, board)

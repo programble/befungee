@@ -25,7 +25,7 @@ from dialect import Dialect
 import random
 import sys
 
-class Befunge93Dialect:
+class Befunge93Dialect(Dialect):
     
     stringmode = False
     

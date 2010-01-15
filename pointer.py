@@ -33,3 +33,7 @@ class InstructionPointer:
     def move():
         self.x += self.dx
         self.y += self.dy
+    
+    def destroy():
+        self.dx = 0
+        self.dy = 0

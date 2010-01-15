@@ -21,6 +21,7 @@
 #       MA 02110-1301, USA.
 
 import random
+import sys
 
 #############
 # Callbacks #
@@ -60,6 +61,114 @@ def int(pointer, board):
     if not pointer.stringmode:
         pointer.stack.push(int(board.get(pointer.x, pointer.y)))
 
+def dup(pointer, board):
+    if not pointer.stringmode:
+        pointer.stack.push(pointer.stack.peek())
+
+def bridge(pointer, board):
+    if not pointer.stringmode:
+        pointer.move()
+
+def add(pointer, board):
+    if not pointer.stringmode:
+        pointer.stack.push(pointer.stack.pop() + pointer.stack.pop())
+
+def multiply(pointer, board):
+    if not pointer.stringmode:
+        pointer.stack.push(pointer.stack.pop() * pointer.stack.pop())
+
+def divide(pointer, board):
+    if not pointer.stringmode:
+        b = pointer.stack.pop()
+        a = pointer.stack.pop()
+        pointer.stack.push(a / b)
+
+def subtract(pointer, board):
+    if not pointer.stringmode:
+        b = pointer.stack.pop()
+        a = pointer.stack.pop()
+        pointer.stack.push(a - b)
+
+def modulo(pointer, board):
+    if not pointer.stringmode:
+        b = pointer.stack.pop()
+        a = pointer.stack.pop()
+        pointer.stack.push(a % b)
+
+def greater_than(pointer, board):
+    if not pointer.stringmode:
+        a = pointer.stack.pop()
+        b = pointer.stack.pop()
+        if b > a:
+            pointer.stack.push(1)
+        else:
+            pointer.stack.push(0)
+
+def not_(pointer, board):
+    if not pointer.stringmode:
+        val = pointer.stack.pop()
+        if val != 0:
+            pointer.stack.push(0)
+        else:
+            pointer.stack.push(1)
+
+def swap(pointer, board):
+    if not pointer.stringmode:
+        a = pointer.stack.pop()
+        b = pointer.stack.pop()
+        pointer.stack.push(a)
+        pointer.stack.push(b)
+
+def pop(pointer, board):
+    if not pointer.stringmode:
+        pointer.stack.pop()
+
+def output_int(pointer, board):
+    if not pointer.stringmode:
+        sys.stdout.write(str(pointer.stack.pop()) + " ")
+
+def output_char(pointer, board):
+    if not pointer.stringmode:
+        sys.stdout.write(chr(pointer.stack.pop()))
+
+def input_int(pointer, board):
+    if not pointer.stringmode:
+        pointer.stack.push(int(raw_input()))
+
+def input_char(pointer, board):
+    if not pointer.stringmode:
+        pointer.stack.push(ord(sys.stdin.read(1)))
+
+def if_horizontal(pointer, board):
+    if not pointer.stringmode:
+        val = stack.pop()
+        if val == 0:
+            right(pointer, board)
+        else:
+            left(pointer, board)
+
+def if_vertical(pointer, board):
+    if not pointer.stringmode:
+        val = stack.pop()
+        if val == 0:
+            down(pointer, board)
+        else:
+            up(pointer, board)
+
+def get(pointer, board):
+    y = pointer.stack.pop()
+    x = pointer.stack.pop()
+    pointer.stack.push(ord(board.get(x, y)))
+
+def put(pointer, board):
+    y = pointer.stack.pop()
+    x = pointer.stack.pop()
+    val = pointer.stack.pop()
+    board.put(x, y, val)
+
+def exit(pointer, board):
+    pointer.destroy()
+
 ############
 # Commands #
 ############
@@ -74,4 +183,24 @@ commands = {
             lambda x: x == '<'          : left,
             lambda x: x == '^'          : up,
             lambda x: x == 'v'          : down,
+            lambda x: x == ':'          : dup,
+            lambda x: x == '#'          : bridge,
+            lambda x: x == '+'          : add,
+            lambda x: x == '-'          : subtract,
+            lambda x: x == '*'          : multiply,
+            lambda x: x == '/'          : divide,
+            lambda x: x == '%'          : modulo,
+            lambda x: x == '`'          : greater_than,
+            lambda x: x == '!'          : not_,
+            lambda x: x == '\\'         : swap,
+            lambda x: x == '$'          : pop,
+            lambda x: x == '.'          : output_int,
+            lambda x: x == ','          : output_char,
+            lambda x: x == '&'          : input_int,
+            lambda x: x == '~'          : input_char,
+            lambda x: x == '_'          : if_horizontal,
+            lambda x: x == '|'          : if_vertical,
+            lambda x: x == 'g'          : get,
+            lambda x: x == 'p'          : put,
+            lambda x: x == '@'          : exit,
 }

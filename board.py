@@ -29,6 +29,8 @@ class BefungeBoard:
         # Populate board with initial_value
         for y in range(self.height):
             _2dlist.append([initial_value for x in range(self.width)])
+        # Per-board pointers list
+        self.pointers = []
     
     def get(self, x, y):
         """Get value located at x,y on board"""

@@ -52,7 +52,7 @@ class Befunge93Dialect(Dialect):
 
     def random(self, pointer, board):
         if not self.stringmode:
-            [left, right, up, down][random.randint(0,3)](pointer, board)
+            [self.left, self.right, self.up, self.down][random.randint(0,3)](pointer, board)
 
     def toggle_stringmode(self, pointer, board):
         self.stringmode = not self.stringmode
@@ -145,30 +145,32 @@ class Befunge93Dialect(Dialect):
 
     def if_horizontal(self, pointer, board):
         if not self.stringmode:
-            val = stack.pop()
+            val = pointer.stack.pop()
             if val == 0:
-                right(pointer, board)
+                self.right(pointer, board)
             else:
-                left(pointer, board)
+                self.left(pointer, board)
 
     def if_vertical(self, pointer, board):
         if not self.stringmode:
-            val = stack.pop()
+            val = pointer.stack.pop()
             if val == 0:
-                down(pointer, board)
+                self.down(pointer, board)
             else:
-                up(pointer, board)
+                self.up(pointer, board)
 
     def get(self, pointer, board):
-        y = pointer.stack.pop()
-        x = pointer.stack.pop()
-        pointer.stack.push(ord(board.get(x, y)))
+        if not self.stringmode:
+            y = pointer.stack.pop()
+            x = pointer.stack.pop()
+            pointer.stack.push(ord(board.get(x, y)))
 
     def put(self, pointer, board):
-        y = pointer.stack.pop()
-        x = pointer.stack.pop()
-        val = pointer.stack.pop()
-        board.put(x, y, val)
+        if not self.stringmode:
+            y = pointer.stack.pop()
+            x = pointer.stack.pop()
+            val = pointer.stack.pop()
+            board.put(x, y, val)
 
     def exit(self, pointer, board):
         pointer.destroy()

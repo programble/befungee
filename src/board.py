@@ -46,8 +46,10 @@ class BefungeBoard:
     def populate(self, data):
         """Populate the board with string data"""
         lines = data.split('\n')
-        for line, y in lines, range(len(lines)):
-            for c, x in line, range(len(line)):
+        for y in range(len(lines)):
+            line = lines[y]
+            for x in range(len(line)):
+                c = line[x]
                 self.put(x, y, c)
     
     def step(self):

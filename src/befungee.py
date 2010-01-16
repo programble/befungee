@@ -60,6 +60,23 @@ def main():
     # Initialze pointer
     main_board.pointers.append(InstructionPointer())
     
+    # Load up file
+    if len(args) >= 1:
+        f = open(args[0], 'r')
+        data = f.read()
+        f.close()
+        main_board.populate(data)
+    else:
+        # Read from stdin
+        data = ""
+        while True:
+            x = sys.stdin.read(1)
+            if x == '':
+                break
+            else:
+                data += x
+        main_board.populate(data)
+    
     # Main execution loop
     while True:
         # Process all pointers

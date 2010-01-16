@@ -20,8 +20,11 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
+import sys
+
 class BefungeBoard:
-    def __init__(self, dialect, width, height, initial_value=' '):
+    def __init__(self, dialect, width, height, debug=False, initial_value=' '):
+        self.debug = debug
         # Dialect used for handling commands
         self.dialect = dialect
         # Width & Height
@@ -72,3 +75,33 @@ class BefungeBoard:
                 pointer.x = self.width - 1
             if pointer.y < 0:
                 pointer.y = self.height - 1
+            
+        # Fancy debugging Stuffs
+        if self.debug:
+            for i in range(len(self.pointers)):
+                pointer = self.pointers[i]
+                color = None
+                if i < 7:
+                    color = i + 1 + 30
+                else:
+                    color = i - 7 + 40
+                sys.stdout.write("\033[%dm" % color)
+                print "x=%d y=%d dx=%d dy=%d" % (pointer.x, pointer.y, pointer.dx, pointer.dy)
+                print pointer.stack._list, "\033[0m"
+            print
+            for y in range(self.height):
+                for x in range(self.width):
+                    cell = self.get(x, y)
+                    for i in range(len(self.pointers)):
+                        pointer = self.pointers[i]
+                        if pointer.x == x and pointer.y == y:
+                            color = None
+                            if i < 7:
+                                color = i + 1 + 40
+                            else:
+                                color = i - 7 + 30
+                            sys.stdout.write("\033[%dm" % color)
+                    sys.stdout.write(cell)
+                    sys.stdout.write("\033[0m")
+                print
+            sys.stdin.read(1)

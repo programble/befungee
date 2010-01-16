@@ -25,6 +25,14 @@ from dialect import Dialect
 import random
 import sys
 
+# Bit of a hack
+def _chr(i):
+    if i > 255:
+        i = 255 - i
+    if i < 0:
+        i += 255
+    return chr(i)
+
 class Befunge93Dialect(Dialect):
     
     stringmode = False
@@ -170,7 +178,7 @@ class Befunge93Dialect(Dialect):
             y = pointer.stack.pop()
             x = pointer.stack.pop()
             val = pointer.stack.pop()
-            board.put(x, y, val)
+            board.put(x, y, _chr(val))
 
     def exit(self, pointer, board):
         pointer.destroy()

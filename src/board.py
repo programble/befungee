@@ -37,10 +37,16 @@ class BefungeBoard:
     
     def get(self, x, y):
         """Get value located at x,y on board"""
+        # out of bounds:
+        if x >= self.width or y >= self.height or x < 0 or y < 0:
+            return ' '
         return self._2dlist[y][x]
     
     def put(self, x, y, value):
         """Put value at x,y on board"""
+        # out of bounds
+        if x >= self.width or y >= self.height or x < 0 or y < 0:
+            return
         self._2dlist[y][x] = value
     
     def populate(self, data):
@@ -62,3 +68,7 @@ class BefungeBoard:
                 pointer.x = 0
             if pointer.y >= self.height:
                 pointer.y = 0
+            if pointer.x < 0:
+                pointer.x = self.width - 1
+            if pointer.y < 0:
+                pointer.y = self.height - 1

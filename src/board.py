@@ -55,3 +55,8 @@ class BefungeBoard:
         for pointer in self.pointers:
             self.dialect.handle(self.get(pointer.x, pointer.y), pointer, self)
             pointer.move()
+            # Wraparound
+            if pointer.x >= self.width:
+                pointer.x = 0
+            if pointer.y >= self.height:
+                pointer.y = 0

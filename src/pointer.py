@@ -32,12 +32,12 @@ class InstructionPointer:
     # Per-pointer stack
     stack = LIFO()
     
-    def move():
+    def move(self):
         """Move pointer by dx and dy"""
         self.x += self.dx
         self.y += self.dy
     
-    def destroy():
+    def destroy(self):
         """Stop moving"""
         self.dx = 0
         self.dy = 0

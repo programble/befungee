@@ -25,6 +25,10 @@ __version__ = "0.2.0a"
 from optparse import OptionParser
 import sys
 
+import board
+from pointer import InstructionPointer
+from dialects import *
+
 def version_info():
     # GNU Coding guidelines suggests:
     # GNU hello 2.3
@@ -42,11 +46,33 @@ def main():
     # Parse command line options
     parser = OptionParser(usage="%prog [options] [file]")
     parser.add_option("--version", dest="version", action="store_true", default=False, help="Print version info and exit")
+    parser.add_option("--b93", "--befunge-93", dest="dialect", action="store_const", const=befunge93.Befunge93Dialect, default=befunge93.Befunge93Dialect, help="Use the Befunge-93 dialect (Default)")
+    parser.add_option("-w", "--width", "-c", "--columns", dest="width", action="store", type="int", default=80, help="Width of board (Default 80)")
+    parser.add_option("--height", "-r", "--rows", dest="height", action="store", type="int", default=25, help="Height of board (Default 25)")
     (options, args) = parser.parse_args()
     
     if options.version:
         version_info()
         sys.exit()
+    
+    # Initialize board
+    main_board = board.BefungeBoard(options.dialect(), options.width, options.height)
+    # Initialze pointer
+    main_board.pointers.append(InstructionPointer())
+    
+    # Main execution loop
+    while True:
+        # Process all pointers
+        main_board.step()
+        
+        # If all pointers are dead, exit
+        mass_murder = True
+        for pointer in main_board.pointers:
+            if pointer.dx != 0 or pointer.dy != 0:
+                mass_murder = False
+        if mass_murder:
+            sys.exit()
+        
 
 if __name__ == '__main__':
 	main()

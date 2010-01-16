@@ -24,4 +24,4 @@ class Dialect:
     def handle(self, command, pointer, board):
         for criteria, callback in self.commands.iteritems():
             if criteria(command):
-                callback(pointer, board)
+                callback(self, pointer, board)

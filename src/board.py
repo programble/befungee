@@ -31,7 +31,7 @@ class BefungeBoard:
         self._2dlist = []
         # Populate board with initial_value
         for y in range(self.height):
-            _2dlist.append([initial_value for x in range(self.width)])
+            self._2dlist.append([initial_value for x in range(self.width)])
         # Per-board pointers list
         self.pointers = []
     
@@ -53,5 +53,5 @@ class BefungeBoard:
     def step(self):
         """Move all pointers and run all commands"""
         for pointer in self.pointers:
-            dialect.handle(self.get(pointer.x, pointer.y), pointer, self)
+            self.dialect.handle(self.get(pointer.x, pointer.y), pointer, self)
             pointer.move()

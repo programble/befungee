@@ -1,9 +1,11 @@
-Befungee is an interpreter for different Funge dialects.
+# Befungee #
+Befungee (http://wiki.programble.co.cc/doku.php/code:funge:befungee) is an interpreter for different Funge dialects.
+For more information on Funge, visit http://wiki.programble.co.cc/doku.php/code:funge:befunge
 
-====== Hello World ======
+## Hello World ##
 To test the hello world befunge application in Befungee, run
-  make hello
+    make hello
 
-====== Cleaning ======
+## Cleaning ##
 To clean files (backups and Python byte-code), run
-  make clean
+    make clean

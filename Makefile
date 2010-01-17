@@ -6,6 +6,9 @@ all:
 hello:
 	python src/befungee.py examples/helloworld.bf
 
+beer:
+	python src/befungee.py examples/catseye/beer.bf
+
 clean:
 	rm -fv *~
 	cd src; $(MAKE) clean

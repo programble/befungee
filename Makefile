@@ -1,7 +1,10 @@
 # Befungee Makefile (I know it's Python, but this will be for install and clean)
 
 all:
-	@echo "I don't do anything yet. Try make clean."
+	@echo "I don't do anything yet. Try make hello"
+
+hello:
+	python src/befungee.py examples/helloworld.bf
 
 clean:
 	rm -fv *~

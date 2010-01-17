@@ -46,6 +46,7 @@ def main():
     # Parse command line options
     parser = OptionParser(usage="%prog [options] [file]")
     parser.add_option("--version", dest="version", action="store_true", default=False, help="Print version info and exit")
+    parser.add_option("-d", "--debug", dest="debug", action="store_true", default=False, help="Run with debugger")
     parser.add_option("--b93", "--befunge-93", dest="dialect", action="store_const", const=befunge93.Befunge93Dialect, default=befunge93.Befunge93Dialect, help="Use the Befunge-93 dialect (Default)")
     parser.add_option("-w", "--width", "-c", "--columns", dest="width", action="store", type="int", default=80, help="Width of board (Default 80)")
     parser.add_option("--height", "-r", "--rows", dest="height", action="store", type="int", default=25, help="Height of board (Default 25)")
@@ -56,7 +57,7 @@ def main():
         sys.exit()
     
     # Initialize board
-    main_board = board.BefungeBoard(options.dialect(), options.width, options.height)
+    main_board = board.BefungeBoard(options.dialect(), options.width, options.height, options.debug)
     # Initialze pointer
     main_board.pointers.append(InstructionPointer())
     

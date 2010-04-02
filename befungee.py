@@ -258,7 +258,12 @@ def main():
     parser.add_option("--height", dest="height", action="store", type="int", default=25, help="Board height")
     parser.add_option("-x", "--x", dest="x", action="store", type="int", default=0, help="Initial X coordinate")
     parser.add_option("-y", "--y", dest="y", action="store", type="int", default=0, help="Initial Y coordinate")
+    parser.add_option("--version", dest="version", action="store_true", default=False, help="Show version information and exit")
     (options, args) = parser.parse_args()
+    
+    if options.version:
+        print "befungee", __version__
+        return 0
     
     board = Board(options.width, options.height, options.debug, options.debugdelay)
     board.pointer.x, board.pointer.y = options.x, options.y

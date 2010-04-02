@@ -290,10 +290,10 @@ def main():
     
     # Default to reading from stdin
     if len(args) == 0:
-        args = ["--"]
+        args = ["-"]
     
     # Read in file
-    if args[0] == "--":
+    if args[0] == "-":
         # Read from stdin
         infile = sys.stdin
     else:

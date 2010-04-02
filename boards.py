@@ -39,7 +39,6 @@ class Befunge93Board:
             self._list.append([' '] * width)
         self.width = width
         self.height = height
-        self.stringmode = False
         
         self.debug = debug
         self.debug_delay = debug_delay
@@ -64,8 +63,8 @@ class Befunge93Board:
         
         c = self.get(self.pointer.x, self.pointer.y)
         if c == '"':
-            self.stringmode = not self.stringmode
-        elif self.stringmode:
+            self.pointer.stringmode = not self.pointer.stringmode
+        elif self.pointer.stringmode:
             self.pointer.stack.push(ord(c))
         elif c in "0123456789":
             self.pointer.stack.push(int(c))
@@ -228,3 +227,4 @@ class Befunge93Board:
                 sys.stdin.read(1)
             else:
                 time.sleep(self.debug_delay / 1000.0)
+

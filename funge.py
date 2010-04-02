@@ -55,6 +55,7 @@ class Pointer:
         self.dx = 1
         self.dy = 0
         self.stack = Stack()
+        self.stringmode = False
     def move(self):
         self.x += self.dx
         self.y += self.dy

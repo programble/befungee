@@ -28,7 +28,7 @@ import time
 from optparse import OptionParser
 from StringIO import StringIO
 
-__version__ = "0.1.3"
+__version__ = "0.1.4"
 
 class Stack:
     """A basic LIFO stack"""

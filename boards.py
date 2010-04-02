@@ -206,7 +206,7 @@ class Befunge93Board:
             # Clear screen
             if os.name == "posix":
                 sys.stdout.write("\x1b[H\x1b[2J")
-            print "Pointer: x=%d y=%d dx=%d dy=%d" % (self.pointer.x, self.pointer.y, self.pointer.dx, self.pointer.dy)
+            print "Pointer: x=%d y=%d dx=%d dy=%d stringmode=%s" % (self.pointer.x, self.pointer.y, self.pointer.dx, self.pointer.dy, self.pointer.stringmode)
             print "Board:"
             for y in range(self.height):
                 for x in range(self.width):

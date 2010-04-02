@@ -31,6 +31,8 @@ __version__ = "0.1.4"
 
 def main():
     parser = OptionParser(usage="%prog [options] [file]")
+    parser.add_option("-m", "--mode", dest="mode", action="store", default="b93", help="Mode to run in")
+    parser.add_option("--b93", dest="mode", action="store_const", const="b93", help="Run in Befunge-93 mode (default)")
     parser.add_option("-d", "--debug", dest="debug", action="store_true", default=False, help="Turn on debugging mode")
     parser.add_option("--delay", dest="debugdelay", action="store", type="int", default=-1, help="Delay in milliseconds between each step in debugging mode, or -1 to wait for input")
     parser.add_option("-w", "--width", "-c", "--columns", dest="width", action="store", type="int", default=80, help="Board width")
@@ -44,8 +46,12 @@ def main():
         print "befungee", __version__
         return 0
     
-    board = boards.Befunge93Board(options.width, options.height, options.debug, options.debugdelay)
-    board.pointer.x, board.pointer.y = options.x, options.y
+    if options.mode == "b93":
+        board = boards.Befunge93Board(options.width, options.height, options.debug, options.debugdelay)
+        board.pointer.x, board.pointer.y = options.x, options.y
+    else:
+        print "Mode not supported"
+        return 1
     
     # Default to reading from stdin
     if len(args) == 0:

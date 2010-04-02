@@ -227,4 +227,214 @@ class Befunge93Board:
                 sys.stdin.read(1)
             else:
                 time.sleep(self.debug_delay / 1000.0)
+    def dead(self):
+        return self.pointer.dx == 0 and self.pointer.dy == 0
 
+class ConcurrentBefunge93Board(Befunge93Board):
+    """A Concurrent Befunge-93 board"""
+    def __init__(self, width, height, debug=False, debug_delay=-1):
+        Befunge93Board.__init__(self, width, height, debug, debug_delay)
+        self.pointers = [Pointer()]
+    
+    def step(self):
+        if self.debug:
+            # Redirect output for debugging
+            sys.stdout = self.debugstream
+        
+        for pointer in [p for p in self.pointers if not (p.dx == 0 and p.dy == 0)]:
+            c = self.get(pointer.x, pointer.y)
+            if c == '"':
+                pointer.stringmode = not pointer.stringmode
+            elif pointer.stringmode:
+                pointer.stack.push(ord(c))
+            elif c in "0123456789":
+                pointer.stack.push(int(c))
+            elif c == '>':
+                pointer.dx = 1
+                pointer.dy = 0
+            elif c == '<':
+                pointer.dx = -1
+                pointer.dy = 0
+            elif c == '^':
+                pointer.dx = 0
+                pointer.dy = -1
+            elif c == 'v':
+                pointer.dx = 0
+                pointer.dy = 1
+            elif c == '?':
+                dir = ['>', 'v', '<', '^'][random.randint(0, 3)]
+                if dir == '>':
+                    pointer.dx = 1
+                    pointer.dy = 0
+                elif dir == '<':
+                    pointer.dx = -1
+                    pointer.dy = 0
+                elif dir == '^':
+                    pointer.dx = 0
+                    pointer.dy = -1
+                elif dir == 'v':
+                    pointer.dx = 0
+                    pointer.dy = 1
+            elif c == '+':
+                pointer.stack.push(pointer.stack.pop() + pointer.stack.pop())
+            elif c == '*':
+                pointer.stack.push(pointer.stack.pop() * pointer.stack.pop())
+            elif c == '-':
+                a = pointer.stack.pop()
+                b = pointer.stack.pop()
+                pointer.stack.push(b - a)
+            elif c == '/':
+                a = pointer.stack.pop()
+                b = pointer.stack.pop()
+                pointer.stack.push(b / a)
+            elif c == '%':
+                a = pointer.stack.pop()
+                b = pointer.stack.pop()
+                pointer.stack.push(b % a)
+            elif c == '!':
+                x = pointer.stack.pop()
+                if x == 0:
+                    pointer.stack.push(1)
+                else:
+                    pointer.stack.push(0)
+            elif c == '`':
+                a = pointer.stack.pop()
+                b = pointer.stack.pop()
+                if b > a:
+                    pointer.stack.push(1)
+                else:
+                    pointer.stack.push(0)
+            elif c == '_':
+                x = pointer.stack.pop()
+                if x == 0:
+                    pointer.dx = 1
+                    pointer.dy = 0
+                else:
+                    pointer.dx = -1
+                    pointer.dy = 0
+            elif c == '|':
+                x = pointer.stack.pop()
+                if x == 0:
+                    pointer.dx = 0
+                    pointer.dy = 1
+                else:
+                    pointer.dx = 0
+                    pointer.dy = -1
+            elif c == ':':
+                x = pointer.stack.pop()
+                pointer.stack.push(x)
+                pointer.stack.push(x)
+            elif c == '\\':
+                a = pointer.stack.pop()
+                b = pointer.stack.pop()
+                pointer.stack.push(a)
+                pointer.stack.push(b)
+            elif c == '$':
+                pointer.stack.pop()
+            elif c == '.':
+                x = pointer.stack.pop()
+                sys.stdout.write(str(x) + ' ')
+            elif c == ',':
+                x = pointer.stack.pop()
+                sys.stdout.write(chr(x))
+            elif c == '#':
+                pointer.move()
+            elif c == 'p':
+                y = pointer.stack.pop()
+                x = pointer.stack.pop()
+                v = pointer.stack.pop()
+                # Simulate unsigned 8-bit integer
+                # Also guarantees value is in ASCII range
+                while v > 255:
+                    v = 255 - v
+                while v < 0:
+                    v += 255
+                self.put(x, y, chr(v))
+            elif c == 'g':
+                y = pointer.stack.pop()
+                x = pointer.stack.pop()
+                pointer.stack.push(ord(self.get(x, y)))
+            elif c == '&':
+                x = raw_input()
+                try:
+                    pointer.stack.push(int(x))
+                except ValueError:
+                    pointer.stack.push(0)
+            elif c == '~':
+                x = sys.stdin.read(1)
+                pointer.stack.push(ord(x))
+            elif c == 't':
+                new = Pointer()
+                new.x = pointer.x
+                new.y = pointer.y
+                new.dx = pointer.dx * -1
+                new.dy = pointer.dy * -1
+                for x in pointer.stack._list:
+                    new.stack._list.append(x)
+                new.move()
+                self.pointers.append(new)
+            elif c == '@':
+                pointer.dx = 0
+                pointer.dy = 0
+            
+            # Advance pointer
+            pointer.move()
+            
+            # Wrap-around
+            if pointer.x >= self.width:
+                pointer.x -= self.width
+            elif pointer.x <= -1:
+                pointer.x += self.width
+            elif pointer.y >= self.height:
+                pointer.y -= self.height
+            elif pointer.y <= -1:
+                pointer.y += self.height
+        
+        # Print debugging information
+        if self.debug:
+            # Reset debugging output redirection
+            sys.stdout = sys.__stdout__
+            # Clear screen
+            if os.name == "posix":
+                sys.stdout.write("\x1b[H\x1b[2J")
+            for i, pointer in zip(range(len(self.pointers)), self.pointers):
+                color = 31 + i % 6
+                if os.name == "posix":
+                    sys.stdout.write("\033[%dm" % color)
+                print "Pointer %d: x=%d y=%d dx=%d dy=%d stringmode=%s" % (i, pointer.x, pointer.y, pointer.dx, pointer.dy, pointer.stringmode)
+                if os.name == "posix":
+                    sys.stdout.write("\033[0m")
+            print "Board:"
+            for y in range(self.height):
+                for x in range(self.width):
+                    c = self.get(x, y)
+                    for i, pointer in zip(range(len(self.pointers)), self.pointers):
+                        if x == pointer.x and y == pointer.y:
+                            if os.name == "posix":
+                                color = 41 + i % 6
+                                sys.stdout.write("\033[%dm" % color)
+                    sys.stdout.write(c)
+                    if os.name == "posix":
+                        sys.stdout.write("\033[0m")
+                sys.stdout.write('\n')
+            #print self.pointer.stack._list
+            for i, pointer in zip(range(len(self.pointers)), self.pointers):
+                color = 31 + i % 6
+                if os.name == "posix":
+                    sys.stdout.write("\033[%dm" % color)
+                print "Stack %d:" % i, pointer.stack._list
+                if os.name == "posix":
+                    sys.stdout.write("\033[0m")
+            print "Output:"
+            self.debugstream.seek(0)
+            print self.debugstream.read()
+            if self.debug_delay == -1:
+                sys.stdin.read(1)
+            else:
+                time.sleep(self.debug_delay / 1000.0)
+    
+    def dead(self):
+        for pointer in self.pointers:
+            if not (pointer.dx == 0 and pointer.dy == 0):
+                return False
+        return True

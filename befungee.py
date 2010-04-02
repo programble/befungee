@@ -33,6 +33,7 @@ def main():
     parser = OptionParser(usage="%prog [options] [file]")
     parser.add_option("-m", "--mode", dest="mode", action="store", default="b93", help="Mode to run in")
     parser.add_option("--b93", dest="mode", action="store_const", const="b93", help="Run in Befunge-93 mode (default)")
+    parser.add_option("--cb93", dest="mode", action="store_const", const="cb93", help="Run in Concurrent Befunge-93 mode")
     parser.add_option("-d", "--debug", dest="debug", action="store_true", default=False, help="Turn on debugging mode")
     parser.add_option("--delay", dest="debugdelay", action="store", type="int", default=-1, help="Delay in milliseconds between each step in debugging mode, or -1 to wait for input")
     parser.add_option("-w", "--width", "-c", "--columns", dest="width", action="store", type="int", default=80, help="Board width")
@@ -49,6 +50,9 @@ def main():
     if options.mode == "b93":
         board = boards.Befunge93Board(options.width, options.height, options.debug, options.debugdelay)
         board.pointer.x, board.pointer.y = options.x, options.y
+    elif options.mode == "cb93":
+        board = boards.ConcurrentBefunge93Board(options.width, options.height, options.debug, options.debugdelay)
+        board.pointers[0].x, board.pointers[0].y = options.x, options.y
     else:
         print "Mode not supported"
         return 1
@@ -89,7 +93,7 @@ def main():
         infile.close()
     
     # Run the program
-    while not (board.pointer.dx == 0 and board.pointer.dy == 0):
+    while not board.dead():
         try:
             board.step()
         except Exception, ex:

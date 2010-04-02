@@ -86,9 +86,15 @@ class Board:
         self.debugstream = StringIO()
     
     def get(self, x, y):
+        # Return space if out of bounds
+        if x >= self.width or y >= self.height or x < 0 or y < 0:
+            return ' '
         return self._list[y][x]
     
     def put(self, x, y, value):
+        # Ignore if out of bounds
+        if x >= self.width or y >= self.height or x < 0 or y < 0:
+            return
         self._list[y][x] = value
     
     def step(self):

@@ -203,6 +203,12 @@ class Board:
             y = self.stack.pop()
             x = self.stack.pop()
             v = self.stack.pop()
+            # Simulate unsigned 8-bit integer
+            # Also guarantees value is in ASCII range
+            while v > 255:
+                v = 255 - v
+            while v < 0:
+                v += 255
             self.put(x, y, chr(v))
         elif c == 'g':
             y = self.stack.pop()

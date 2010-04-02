@@ -231,14 +231,14 @@ class Board:
         self.pointer.move()
         
         # Wrap-around
-        if self.pointer.x == self.width:
-            self.pointer.x = 0
-        elif self.pointer.x == -1:
-            self.pointer.x = self.width - 1
-        elif self.pointer.y == self.height:
-            self.pointer.y = 0
-        elif self.pointer.y == -1:
-            self.pointer.y = self.height -1
+        if self.pointer.x >= self.width:
+            self.pointer.x -= self.width
+        elif self.pointer.x <= -1:
+            self.pointer.x += self.width
+        elif self.pointer.y >= self.height:
+            self.pointer.y -= self.height
+        elif self.pointer.y <= -1:
+            self.pointer.y += self.height
         
         # Print debugging information
         if self.debug:
@@ -313,7 +313,7 @@ def main():
             y += 1
             x = 0
             continue
-        if x >= options.width or y >= options.height:
+        if x > options.width or y > options.height:
             print "File too large"
             return 1
         board.put(x, y, c)

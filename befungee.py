@@ -69,7 +69,7 @@ class Pointer:
         self.x += self.dx
         self.y += self.dy
 
-class Board:
+class BefungeBoard:
     """A Befunge board"""
     def __init__(self, width, height, debug=False, debug_delay=-1):
         self.pointer = Pointer()
@@ -285,7 +285,7 @@ def main():
         print "befungee", __version__
         return 0
     
-    board = Board(options.width, options.height, options.debug, options.debugdelay)
+    board = BefungeBoard(options.width, options.height, options.debug, options.debugdelay)
     board.pointer.x, board.pointer.y = options.x, options.y
     
     # Default to reading from stdin

@@ -64,6 +64,7 @@ class Pointer:
         self.y = 0
         self.dx = 1
         self.dy = 0
+        self.stack = Stack()
     def move(self):
         self.x += self.dx
         self.y += self.dy
@@ -71,7 +72,6 @@ class Pointer:
 class Board:
     """A Befunge board"""
     def __init__(self, width, height, debug=False, debug_delay=-1):
-        self.stack = Stack()
         self.pointer = Pointer()
         self._list = []
         # Fill board with whitespace
@@ -106,9 +106,9 @@ class Board:
         if c == '"':
             self.stringmode = not self.stringmode
         elif self.stringmode:
-            self.stack.push(ord(c))
+            self.pointer.stack.push(ord(c))
         elif c in "0123456789":
-            self.stack.push(int(c))
+            self.pointer.stack.push(int(c))
         elif c == '>':
             self.pointer.dx = 1
             self.pointer.dy = 0
@@ -136,36 +136,36 @@ class Board:
                 self.pointer.dx = 0
                 self.pointer.dy = 1
         elif c == '+':
-            self.stack.push(self.stack.pop() + self.stack.pop())
+            self.pointer.stack.push(self.pointer.stack.pop() + self.pointer.stack.pop())
         elif c == '*':
-            self.stack.push(self.stack.pop() * self.stack.pop())
+            self.pointer.stack.push(self.pointer.stack.pop() * self.pointer.stack.pop())
         elif c == '-':
-            a = self.stack.pop()
-            b = self.stack.pop()
-            self.stack.push(b - a)
+            a = self.pointer.stack.pop()
+            b = self.pointer.stack.pop()
+            self.pointer.stack.push(b - a)
         elif c == '/':
-            a = self.stack.pop()
-            b = self.stack.pop()
-            self.stack.push(b / a)
+            a = self.pointer.stack.pop()
+            b = self.pointer.stack.pop()
+            self.pointer.stack.push(b / a)
         elif c == '%':
-            a = self.stack.pop()
-            b = self.stack.pop()
-            self.stack.push(b % a)
+            a = self.pointer.stack.pop()
+            b = self.pointer.stack.pop()
+            self.pointer.stack.push(b % a)
         elif c == '!':
-            x = self.stack.pop()
+            x = self.pointer.stack.pop()
             if x == 0:
-                self.stack.push(1)
+                self.pointer.stack.push(1)
             else:
-                self.stack.push(0)
+                self.pointer.stack.push(0)
         elif c == '`':
-            a = self.stack.pop()
-            b = self.stack.pop()
+            a = self.pointer.stack.pop()
+            b = self.pointer.stack.pop()
             if b > a:
-                self.stack.push(1)
+                self.pointer.stack.push(1)
             else:
-                self.stack.push(0)
+                self.pointer.stack.push(0)
         elif c == '_':
-            x = self.stack.pop()
+            x = self.pointer.stack.pop()
             if x == 0:
                 self.pointer.dx = 1
                 self.pointer.dy = 0
@@ -173,7 +173,7 @@ class Board:
                 self.pointer.dx = -1
                 self.pointer.dy = 0
         elif c == '|':
-            x = self.stack.pop()
+            x = self.pointer.stack.pop()
             if x == 0:
                 self.pointer.dx = 0
                 self.pointer.dy = 1
@@ -181,28 +181,28 @@ class Board:
                 self.pointer.dx = 0
                 self.pointer.dy = -1
         elif c == ':':
-            x = self.stack.pop()
-            self.stack.push(x)
-            self.stack.push(x)
+            x = self.pointer.stack.pop()
+            self.pointer.stack.push(x)
+            self.pointer.stack.push(x)
         elif c == '\\':
-            a = self.stack.pop()
-            b = self.stack.pop()
-            self.stack.push(a)
-            self.stack.push(b)
+            a = self.pointer.stack.pop()
+            b = self.pointer.stack.pop()
+            self.pointer.stack.push(a)
+            self.pointer.stack.push(b)
         elif c == '$':
-            self.stack.pop()
+            self.pointer.stack.pop()
         elif c == '.':
-            x = self.stack.pop()
+            x = self.pointer.stack.pop()
             sys.stdout.write(str(x) + ' ')
         elif c == ',':
-            x = self.stack.pop()
+            x = self.pointer.stack.pop()
             sys.stdout.write(chr(x))
         elif c == '#':
             self.pointer.move()
         elif c == 'p':
-            y = self.stack.pop()
-            x = self.stack.pop()
-            v = self.stack.pop()
+            y = self.pointer.stack.pop()
+            x = self.pointer.stack.pop()
+            v = self.pointer.stack.pop()
             # Simulate unsigned 8-bit integer
             # Also guarantees value is in ASCII range
             while v > 255:
@@ -211,18 +211,18 @@ class Board:
                 v += 255
             self.put(x, y, chr(v))
         elif c == 'g':
-            y = self.stack.pop()
-            x = self.stack.pop()
-            self.stack.push(ord(self.get(x, y)))
+            y = self.pointer.stack.pop()
+            x = self.pointer.stack.pop()
+            self.pointer.stack.push(ord(self.get(x, y)))
         elif c == '&':
             x = raw_input()
             try:
-                self.stack.push(int(x))
+                self.pointer.stack.push(int(x))
             except ValueError:
-                self.stack.push(0)
+                self.pointer.stack.push(0)
         elif c == '~':
             x = sys.stdin.read(1)
-            self.stack.push(ord(x))
+            self.pointer.stack.push(ord(x))
         elif c == '@':
             self.pointer.dx = 0
             self.pointer.dy = 0
@@ -260,7 +260,7 @@ class Board:
                         sys.stdout.write("\033[0m")
                 sys.stdout.write('\n')
             print "Stack:"
-            print self.stack._list
+            print self.pointer.stack._list
             print "Output:"
             self.debugstream.seek(0)
             print self.debugstream.read()

@@ -20,6 +20,7 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 
+import os
 import random
 import sys
 import time
@@ -232,16 +233,19 @@ class Board:
             # Reset debugging output redirection
             sys.stdout = sys.__stdout__
             # Clear screen
-            sys.stdout.write("\x1b[H\x1b[2J")
+            if os.name == "posix":
+                sys.stdout.write("\x1b[H\x1b[2J")
             print "Pointer: x=%d y=%d dx=%d dy=%d" % (self.pointer.x, self.pointer.y, self.pointer.dx, self.pointer.dy)
             print "Board:"
             for y in range(self.height):
                 for x in range(self.width):
                     c = self.get(x, y)
                     if x == self.pointer.x and y == self.pointer.y:
-                        sys.stdout.write("\033[41m")
+                        if os.name == "posix":
+                            sys.stdout.write("\033[41m")
                     sys.stdout.write(c)
-                    sys.stdout.write("\033[0m")
+                    if os.name == "posix":
+                        sys.stdout.write("\033[0m")
                 sys.stdout.write('\n')
             print "Stack:"
             print self.stack._list

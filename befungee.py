@@ -33,22 +33,26 @@ class Stack:
     """A basic LIFO stack"""
     def __init__(self):
         self._list = []
+    
     def push(self, item):
         """Push an item onto the top of the stack"""
         self._list = [item] + self._list
+    
     def pop(self):
         """Remove and return the top item on the stack"""
-        if self.length() == 0:
+        if len(self) == 0:
             return 0
         item = self._list[0]
         self._list = self._list[1:]
         return item
+    
     def peek(self):
         """Return the top item on the stack without removing it"""
-        if self.length() == 0:
+        if len(self) == 0:
             return 0
         return self._list[0]
-    def length(self):
+    
+    def __len__(self):
         """Return the number of items on the stack"""
         return len(self._list)
 
@@ -305,7 +309,13 @@ def main():
     
     # Run the program
     while not (board.pointer.dx == 0 and board.pointer.dy == 0):
-        board.step()
+        try:
+            board.step()
+        except Exception, ex:
+            # Make sure stdout is not redirected
+            sys.stdout = sys.__stdout__
+            print "Error (%d,%d):" % (board.pointer.x, board.pointer.y), ex
+            return 1
     
     return 0
 

@@ -193,7 +193,7 @@ class Board:
             self.stack.pop()
         elif c == '.':
             x = self.stack.pop()
-            sys.stdout.write(str(x))
+            sys.stdout.write(str(x) + ' ')
         elif c == ',':
             x = self.stack.pop()
             sys.stdout.write(chr(x))

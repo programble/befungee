@@ -121,8 +121,7 @@ class Befunge93Board:
                 self.pointer.dx = 0
                 self.pointer.dy = -1
         elif c == ':':
-            x = self.pointer.stack.pop()
-            self.pointer.stack.push(x)
+            x = self.pointer.stack.peek()
             self.pointer.stack.push(x)
         elif c == '\\':
             a = self.pointer.stack.pop()
@@ -162,7 +161,10 @@ class Befunge93Board:
                 self.pointer.stack.push(0)
         elif c == '~':
             x = sys.stdin.read(1)
-            self.pointer.stack.push(ord(x))
+            if x == '':
+                self.pointer.stack.push(-1)
+            else:
+                self.pointer.stack.push(ord(x))
         elif c == '@':
             self.pointer.dx = 0
             self.pointer.dy = 0
